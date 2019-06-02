@@ -12,29 +12,51 @@ const app = express();
 const dbUrl = "mongodb://localhost:27017";
 const dbName = "star_wards_db";
 
+// Maps id to User object
+let fakeDatabase: any = [];
+
 app.use(bodyParser.json());
 
 var schema = buildSchema(`
+  type Event {
+      _id: ID!
+      title: String!
+      description: String
+      price: Float
+      date: String
+  }
+
+  input EventInput {
+      title: String!
+      description: String
+      price: Float
+  }
 
   type Query {
-    events: [String]
+    events: [Event]
   }
 
   type Mutation {
-      createEvent(name: String): String
+      createEvent(eventInput: EventInput): Event
   }
 `);
 
-// Maps id to User object
-var fakeDatabase: any = ['a', 'b', 'c'];
   
   var root = {
     events: function () {
       return fakeDatabase;
     },
 
-    createEvent: function({name}: any) {
-        return name;
+    createEvent: function({ eventInput }: any) {
+        const event = {
+            _id: Math.random().toString(),
+            title: eventInput.title,
+            description: eventInput.description,
+            price: eventInput.price,
+            date: new Date().toISOString()
+        }
+        fakeDatabase.push(event);
+        return event;
     }
   };
   
