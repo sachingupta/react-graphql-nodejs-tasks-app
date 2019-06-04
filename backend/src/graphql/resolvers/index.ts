@@ -1,51 +1,88 @@
 import { UserModel } from "../../models/user";
 import { EventModel } from "../../models/event";
+import { BookingModel } from "../../models/booking";
+
 import * as bcrypt from "bcryptjs";
+import { userInfo } from "os";
 
 const getUser = (userId: any) => {
     return UserModel.findById(userId)
-    .then((user: any) => {
-        return { 
-            ...user._doc, 
-            _id: user._doc._id.toString(), 
-            createdEvents: getEvents.bind(this, user._doc.createdEvents) 
-        };
-    })
-    .catch((err: any) => {
-        throw err;
-    })
+        .then((user: any) => {
+            return {
+                ...user._doc,
+                _id: user._doc._id.toString(),
+                createdEvents: getEvents.bind(this, user._doc.createdEvents)
+            };
+        })
+        .catch((err: any) => {
+            throw err;
+        })
 }
 
 const getEvents = (eventIds: any) => {
-    console.log( 'get events called' + eventIds);
-    return EventModel.find({_id: {$in: eventIds}})
-    .then((events: any) => {
-        return events.map((event: any) => {
-            return {
-                 ...event._doc, 
-                 _id: event._doc._id.toString(),
-                 date: new Date(event._doc.date).toISOString(),
-                 creator: getUser.bind(this, event._doc.creator) 
+    console.log('get events called' + eventIds);
+    return EventModel.find({ _id: { $in: eventIds } })
+        .then((events: any) => {
+            return events.map((event: any) => {
+                return {
+                    ...event._doc,
+                    _id: event._doc._id.toString(),
+                    date: new Date(event._doc.date).toISOString(),
+                    creator: getUser.bind(this, event._doc.creator)
                 };
-        });
-    })
-    .catch((err: any) => {
-        throw err;
-    })
+            });
+        })
+        .catch((err: any) => {
+            throw err;
+        })
+}
+
+const getEvent = (eventId: any) => {
+    return EventModel.findById(eventId)
+        .then((event: any) => {
+            return {
+                ...event._doc,
+                _id: event._doc._id.toString(),
+                date: new Date(event._doc.date).toISOString(),
+                creator: getUser.bind(this, event._doc.creator)
+            };
+        })
+        .catch((err: any) => {
+            throw err;
+        })
 }
 
 export const Resolvers = {
+    bookings: function () {
+        return BookingModel.find()
+            .then((bookings: any) => {
+                return bookings.map((booking: any) => {
+                    return {
+                        ...booking._doc,
+                        _id: booking._doc._id.toString(),
+                        user: getUser.bind(this, booking._doc.user),
+                        event: getEvent.bind(this, booking._doc.event),
+                        createdAt: new Date(booking._doc.createdAt).toISOString(),
+                        updatedAt: new Date(booking._doc.createdAt).toISOString()
+                    };
+                });
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
+    },
+
     events: function () {
         return EventModel.find()
             .then((events: any) => {
                 console.log(events);
                 return events.map((event: any) => {
                     return {
-                         ...event._doc, 
-                         _id: event._doc._id.toString(),
-                         date: new Date(event._doc.date).toISOString(),
-                         creator: getUser.bind(this, event._doc.creator) 
-                        };
+                        ...event._doc,
+                        _id: event._doc._id.toString(),
+                        date: new Date(event._doc.date).toISOString(),
+                        creator: getUser.bind(this, event._doc.creator)
+                    };
                 });
             })
             .catch((err: any) => {
@@ -107,5 +144,46 @@ export const Resolvers = {
                         console.log(err);
                     });
             });
+    },
+
+    bookEvent: function ({ eventId }: any) {
+        return EventModel.findOne({ _id: eventId })
+            .then((event: any) => {
+                const booking = new BookingModel({
+                    user: '5cf4cf2afc7b8613903150d2',
+                    event: event
+                });
+                return booking.save()
+            })
+            .then((booking: any) => {
+                return {
+                    ...booking._doc,
+                    _id: booking._doc._id.toString(),
+                    user: getUser.bind(this, booking._doc.user),
+                    event: getEvent.bind(this, booking._doc.event),
+                    createdAt: new Date(booking._doc.createdAt).toISOString(),
+                    updatedAt: new Date(booking._doc.createdAt).toISOString()
+                };
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
+    },
+
+    cancelBooking: async function ({ bookingId }: any) {
+        try {
+            const booking: any = await BookingModel.findById(bookingId).populate('event');
+            const event = {
+                ...booking.event._doc,
+                _id: booking.event.id,
+                creator: getUser.bind(this, booking.event._doc.creator)
+            }
+            await BookingModel.deleteOne({ _id: bookingId });
+            return event;
+        }
+
+        catch (err) {
+            console.log(err);
+        }
     }
 };
