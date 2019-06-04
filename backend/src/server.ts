@@ -6,7 +6,7 @@ const graphqlHTTP = require("express-graphql");
 const mongoose = require("mongoose");
 
 import * as Constants from "./constants";
-import { RootValue, RootSchema } from "./graphql/index";
+import { Resolvers, RootSchema } from "./graphql/index";
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use('/graphql', graphqlHTTP({
   schema: RootSchema,
-  rootValue: RootValue,
+  rootValue: Resolvers,
   graphiql: true,
 }));
 
