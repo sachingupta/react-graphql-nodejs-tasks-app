@@ -1,4 +1,6 @@
-export const typesDef = `
+import { buildSchema } from "graphql";
+
+const typesDef = `
 type Event {
     _id: ID!
     title: String!
@@ -35,3 +37,5 @@ type Mutation {
     createUser(userInput: UserInput): User
 }
 `;
+
+export const RootSchema = buildSchema(typesDef);

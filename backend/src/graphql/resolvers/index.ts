@@ -7,7 +7,7 @@ const getUser = (userId: any) => {
     .then((user: any) => {
         return { 
             ...user._doc, 
-            _id: user._doc.id, 
+            _id: user._doc._id.toString(), 
             createdEvents: getEvents.bind(this, user._doc.createdEvents) 
         };
     })
@@ -24,6 +24,7 @@ const getEvents = (eventIds: any) => {
             return {
                  ...event._doc, 
                  _id: event._doc._id.toString(),
+                 date: new Date(event._doc.date).toISOString(),
                  creator: getUser.bind(this, event._doc.creator) 
                 };
         });
@@ -42,6 +43,7 @@ export const Resolvers = {
                     return {
                          ...event._doc, 
                          _id: event._doc._id.toString(),
+                         date: new Date(event._doc.date).toISOString(),
                          creator: getUser.bind(this, event._doc.creator) 
                         };
                 });

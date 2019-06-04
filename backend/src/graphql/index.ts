@@ -1,7 +1,4 @@
-import { buildSchema } from "graphql";
-import { typesDef } from "./types";
-
-export const RootSchema = buildSchema(typesDef);
+export { RootSchema } from "./schema/index";
 export  { Resolvers  } from "./resolvers/index";
 
 
