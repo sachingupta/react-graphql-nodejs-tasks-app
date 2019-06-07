@@ -1,5 +1,8 @@
 import { UserModel } from "../../models/user";
 import * as bcrypt from "bcryptjs";
+import * as jwt from "jsonwebtoken";
+import { tokenHashKey } from "./constants";
+
 
 export const authResolver = {
     createUser: function ({ userInput }: any) {
@@ -9,7 +12,7 @@ export const authResolver = {
                     throw new Error("User exists already");
                 }
                 return bcrypt.hash(userInput.password, 12)
-                    .then((hasbPassword) => {
+                    .then((hasbPassword: any) => {
                         const user = new UserModel({
                             email: userInput.email,
                             password: hasbPassword
@@ -26,5 +29,24 @@ export const authResolver = {
                         console.log(err);
                     });
             });
+    },
+
+    login: async ({ email, password }: any) => {
+        const user: any = await UserModel.findOne({ email: email });
+        if (!user) {
+            throw new Error("User doesn't exists");
+        }
+        const isEqual = await bcrypt.compare(password, user.password);
+        if (!isEqual) {
+            throw new Error("Password is incorrect!");
+        }
+        const token = jwt.sign({ userId: user.id, email: user.email }, tokenHashKey, {
+            expiresIn: '1h'
+        });
+        return {
+            userId: user.id,
+            token,
+            tokenExpiration: 1
+        };
     }
 };

@@ -7,10 +7,13 @@ const mongoose = require("mongoose");
 
 import * as Constants from "./constants";
 import { Resolvers, RootSchema } from "./graphql/index";
+import { isAuth } from "./middleware/is-auth";
 
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use(isAuth);
 
 app.use('/graphql', graphqlHTTP({
   schema: RootSchema,
@@ -30,4 +33,4 @@ mongoose.connect(Constants.mongoDbUri, { useNewUrlParser: true })
   })
   .catch((err: any) => {
     console.log(err);
-});
+  });

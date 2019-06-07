@@ -4,7 +4,10 @@ import { EventModel } from "../../models/event";
 
 
 export const bookingResolver = {
-    bookings: function () {
+    bookings: function (req: any) {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated!');
+        }
         return BookingModel.find()
             .then((bookings: any) => {
                 return bookings.map((booking: any) => {
@@ -16,7 +19,10 @@ export const bookingResolver = {
             });
     },
 
-    bookEvent: function ({ eventId }: any) {
+    bookEvent: function ({ eventId }: any, req: any) {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated!');
+        }
         return EventModel.findOne({ _id: eventId })
             .then((event: any) => {
                 const booking = new BookingModel({
@@ -33,7 +39,10 @@ export const bookingResolver = {
             });
     },
 
-    cancelBooking: async function ({ bookingId }: any) {
+    cancelBooking: async function ({ bookingId }: any, req: any) {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated!');
+        }
         try {
             const booking: any = await BookingModel.findById(bookingId).populate('event');
             const event = transformEvent(booking.event);
