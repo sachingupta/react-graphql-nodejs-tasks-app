@@ -1,4 +1,2 @@
 export { RootSchema } from "./schema/index";
-export  { Resolvers  } from "./resolvers/index";
-
-
+export  { rootResolver as Resolvers  } from "./resolvers/index";
