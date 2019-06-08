@@ -18,3 +18,10 @@ mutation {
     _id
   }
 }
+
+mutation {
+  createUser(userInput: {email: "test@gmail.com", password: "test"}) {
+    _id
+    email
+  }
+}
