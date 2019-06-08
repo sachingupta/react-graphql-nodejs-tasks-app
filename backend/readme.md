@@ -9,3 +9,7 @@ eslint eslint-plugin-import: help us to resolve import issues than we can have.
 nodemon: This plugin avoid us than periodically we have reloading application.
 
 ts-node: Allow us to run typescript files without transpile javascript to plain text.
+
+Steps to try:
+1. yarn install
+2. yarn start

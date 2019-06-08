@@ -1,37 +1,24 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { AuthPage } from './pages/Auth';
+import { EventsPage } from './pages/Events';
+import { BookingsPage } from './pages/Bookings';
 
+class App extends React.Component<{}, {}> {
 
-const App: React.FC = () => {
-  const [fact, setFact] = React.useState('');
-
-  React.useEffect(() => {
-    fetch('http://localhost:7071/api/funFacts')
-    .then(raw => raw.json())
-    .then(response => {
-      setFact(response.text);
-    })
-  }, [])
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          {fact}
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    render() {
+        return (
+            <BrowserRouter>
+                <Switch>
+                    <Redirect from="/" to="/auth" exact />
+                    <Route path="/auth" component={AuthPage} />
+                    <Route path="/events" component={EventsPage} />
+                    <Route path="/bookings" component={BookingsPage} />
+                </Switch>
+            </BrowserRouter>
+        );
+    }
 }
 
 export default App;
