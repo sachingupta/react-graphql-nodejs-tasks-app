@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './Auth.css';
 import { graphQLAPIUrl } from "../constants";
+import { AuthContext } from "../context/auth-context";
+
 export const AuthPage = (props: any) => {
     const [isLogin, setIsLogin] = useState(true);
 
@@ -10,6 +12,8 @@ export const AuthPage = (props: any) => {
     const onEmailChange = (e: any) => {
         setEmail(e.target.value);
     };
+
+    const authContext = useContext(AuthContext);
 
     const onPasswordChange = (e: any) => {
         setPassword(e.target.value);
@@ -63,6 +67,9 @@ export const AuthPage = (props: any) => {
                 return res.json();
             })
             .then(resData => {
+                if(resData.data.login.token) {
+                    authContext.login(resData.data.login.token, resData.data.login.userId, resData.data.login.tokenExpiration)
+                }
                 console.log(resData);
             })
             .catch(err => {
