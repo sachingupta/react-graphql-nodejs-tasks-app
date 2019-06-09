@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import './Auth.css';
+import '../index.css';
 import { graphQLAPIUrl } from "../constants";
 import { AuthContext } from "../context/auth-context";
 

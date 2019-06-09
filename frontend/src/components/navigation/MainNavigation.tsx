@@ -22,6 +22,9 @@ export const MainNavigation = (props: any) => {
                             {context.token && <li>
                                 <NavLink to="/bookings">Bookings</NavLink>
                             </li>}
+                            {context.token && <li>
+                                <button onClick={context.logout}>Logout</button>
+                            </li>}
                         </ul>
                     </nav>
                 </header>

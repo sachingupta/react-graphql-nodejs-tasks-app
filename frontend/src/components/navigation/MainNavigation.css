@@ -30,14 +30,14 @@
   margin: 0 1rem; 
 }
 
-.main-navigation_item a{
+.main-navigation_item a, .main-navigation_item button{
   text-decoration: none;
 }
 
-.main-navigation_item a:hover{
+.main-navigation_item a:hover, .main-navigation_item button:hover{
   color: pink;
 }
 
-.main-navigation_item a.active, a:active{
+.main-navigation_item a.active, a:active, .main-navigation_item button:active{
   color: blue;
 }
