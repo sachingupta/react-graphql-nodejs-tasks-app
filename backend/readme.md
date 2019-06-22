@@ -33,7 +33,7 @@ query {
 
 
 mutation {
-  createEvent(eventInput:{title: "a", description: "a", price 10}) {
+  createEvent(eventInput:{title: "a", description: "a", price: 10, date: "2018-05-05"}) {
     _id
   }
 }

@@ -4,10 +4,7 @@ import { transformEvent } from "./utils";
 
 
 export const eventsResolver = {
-     events: function (req: any) {
-        if(!req.isAuth) {
-            throw new Error('Unauthenticated!');
-        }
+     events: function ({}, req: any) {
         return EventModel.find()
             .then((events: any) => {
                 console.log(events);
@@ -28,7 +25,7 @@ export const eventsResolver = {
             title: eventInput.title,
             description: eventInput.description,
             price: eventInput.price,
-            date: new Date(),
+            date: new Date(eventInput.date),
             creator: '5cf4cf2afc7b8613903150d2'
         });
 
