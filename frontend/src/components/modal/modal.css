@@ -3,19 +3,27 @@
     width: 30rem;
     left: calc((100% - 30rem)/2);
     border: 1px solid black;
-    background-color: yellow;
+    background-color: white;
     padding-bottom: 1rem;
-    text-align: center;
     top: 10vh;
 }
 
 .modal_header {
-background: purple;
+background: blue;
 color: white;
-padding: 0;
+padding: 0.2rem 1rem;
 }
 
 .modal_header > h1{ 
  margin: 0;
  padding: 0;
+}
+
+.modal_content {
+    padding: 1rem;
+}
+
+.modal_actions{
+    padding: 0.2rem 0;
+    text-align: right;
 }

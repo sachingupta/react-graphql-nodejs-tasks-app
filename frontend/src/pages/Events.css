@@ -5,3 +5,21 @@
   border: 1px solid blue;
   width: 20rem;
 }
+
+.event-form{
+  
+}
+
+.events_list{
+  width: 40rem;
+  max-width: 90%;
+  margin: 2rem auto;
+  list-style: none;
+  padding: 0;
+}
+
+.events_list-item{
+  margin:1rem 0;
+  border: 1px solid blue;
+  padding: 1rem;
+}

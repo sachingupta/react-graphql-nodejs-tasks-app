@@ -19,12 +19,16 @@ export const MainNavigation = (props: any) => {
                             <li>
                                 <NavLink to="/events">Events</NavLink>
                             </li>
-                            {context.token && <li>
-                                <NavLink to="/bookings">Bookings</NavLink>
-                            </li>}
-                            {context.token && <li>
-                                <button onClick={context.logout}>Logout</button>
-                            </li>}
+                            {context.token && (
+                            <React.Fragment>
+                                <li>
+                                    <NavLink to="/bookings">Bookings</NavLink>
+                                </li>
+                                <li>
+                                    <button onClick={context.logout}>Logout</button>
+                                </li>
+                            </React.Fragment>
+                            )}
                         </ul>
                     </nav>
                 </header>

@@ -17,6 +17,8 @@
 
 .main-navigation_item {
   margin-left: 1.5rem; 
+  margin-left: auto;
+  padding-right: 1rem;
 }
 
 .main-navigation_item ul {

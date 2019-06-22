@@ -20,17 +20,20 @@ code {
   width: 100%;
   display: block;
   margin-bottom: 1rem;
+  font-weight: 600;
   }
   
-  .form-control input{
+  .form-control input, .form-control textarea{
     width: 100%;
     display: block;
+    padding: 0.3rem 0.5rem;
+    box-sizing: border-box;
   }
   
   
   .form-actions button, button, .btn{
-   background-color: aqua;
-   border: 1px solid aqua;
+   background-color: blue;
+   border: 1px solid blue;
    border-radius: 3px;
    padding: 0.25rem 1rem;
    margin-right: 1rem;
