@@ -5,8 +5,11 @@ import { AuthContext } from '../../../../context/auth-context';
 export const EventItem = (props: any) => {
     const authContext = useContext(AuthContext);
     const event = props.event;
+    const onDetail = () => {
+        props.onDetail(event._id);
+    }
     return (
-        <li key={event.id} className="events_list-item">
+        <li key={event._id} className="events_list-item">
             <div>
                 <h1>{event.title}</h1>
                 <h2>${event.price} - {new Date(event.date).toLocaleDateString('de-De')}</h2>
@@ -15,7 +18,7 @@ export const EventItem = (props: any) => {
                 {authContext.userId == event.creator._id ?
                     (<p>you are owner of this event</p>)
                     : (
-                        <button>View detail </button>
+                        <button onClick={onDetail}>View detail </button>
                     )}
             </div>
         </li>

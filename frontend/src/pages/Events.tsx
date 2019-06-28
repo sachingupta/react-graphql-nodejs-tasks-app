@@ -14,6 +14,7 @@ export const EventsPage = (props: any) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [creating, setCreating] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null as any);
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState("");
@@ -41,6 +42,7 @@ export const EventsPage = (props: any) => {
 
     const modalCancelHandler = () => {
         setCreating(false);
+        setSelectedEvent(null);
     }
 
     const modalConfirmHandler = () => {
@@ -88,6 +90,10 @@ export const EventsPage = (props: any) => {
                 })
             setCreating(false);
         }
+    }
+
+    const bookEventHandler = () => {
+        setSelectedEvent(null);
     }
 
     const fetchEvents = () => {
@@ -138,10 +144,14 @@ export const EventsPage = (props: any) => {
         fetchEvents();
     }, []);
 
+    const showDetailHandler = (eventId: any) => {
+        setSelectedEvent(events.find((e: any) => e._id === eventId));
+    }
+
     return (
         <React.Fragment>
-            {creating && <Backdrop />}
-            {creating && <Modal title="Add Event" canCancel canConfirm onCancel={modalCancelHandler} onConfirm={modalConfirmHandler}>
+            {(creating || selectedEvent) && <Backdrop />}
+            {creating && <Modal title="Add Event" confirmText="Confirm" canCancel canConfirm onCancel={modalCancelHandler} onConfirm={modalConfirmHandler}>
                 <form className="event-form" onSubmit={modalConfirmHandler}>
                     <div className="form-control">
                         <label htmlFor="title">Title</label>
@@ -164,9 +174,15 @@ export const EventsPage = (props: any) => {
             {authContext.token && <div className="events-control">
                 <button className="button" type="button" onClick={startCreateEventHandler}>Create Event</button>
             </div>}
+
+            {selectedEvent && (<Modal title={selectedEvent.title} confirmText="Book" canCancel canConfirm onCancel={modalCancelHandler} onConfirm={bookEventHandler}>
+               <h1>{selectedEvent.title}</h1>
+               <h2>{selectedEvent.price}</h2>
+               <p>{selectedEvent.description}</p>
+            </Modal>)}
             
             { isLoading ? <p>Loading...</p>
-            :  <EventList events={events} />
+            :  <EventList events={events} onDetail={showDetailHandler} />
             }
 
         </React.Fragment>
