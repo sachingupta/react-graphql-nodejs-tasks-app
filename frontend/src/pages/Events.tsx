@@ -5,11 +5,13 @@ import { graphQLAPIUrl } from "../constants";
 import { AuthContext } from "../context/auth-context";
 import { Modal } from "../components/modal/modal";
 import { Backdrop } from "../components/backdrop/backdrop";
+import { EventList } from '../components/events/eventList/EventList';
 
 export const EventsPage = (props: any) => {
     const authContext = useContext(AuthContext);
 
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState([] as any);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [creating, setCreating] = useState(false);
     const [title, setTitle] = useState("");
@@ -51,6 +53,7 @@ export const EventsPage = (props: any) => {
                 createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}" }) {
                     _id
                     title
+                    price
                     description
                     date
                     creator {
@@ -78,7 +81,7 @@ export const EventsPage = (props: any) => {
                 })
                 .then(resData => {
                     console.log(resData);
-                    fetchEvents();
+                    setEvents([...events, resData.data.createEvent]);
                 })
                 .catch(err => {
                     console.log(err);
@@ -88,12 +91,14 @@ export const EventsPage = (props: any) => {
     }
 
     const fetchEvents = () => {
+        setIsLoading(true);
         let requestBody = {
             query: `
             query {
                 events {
                     _id
                     title
+                    price
                     description
                     date
                     creator {
@@ -121,9 +126,11 @@ export const EventsPage = (props: any) => {
             })
             .then(resData => {
                 setEvents(resData.data.events);
+                setIsLoading(false);
             })
             .catch(err => {
                 console.log(err);
+                setIsLoading(false);
             })
     }
 
@@ -157,11 +164,10 @@ export const EventsPage = (props: any) => {
             {authContext.token && <div className="events-control">
                 <button className="button" type="button" onClick={startCreateEventHandler}>Create Event</button>
             </div>}
-            <ul className="events_list">
-                { events.map((event: any) => {
-                    return <li key={event.id} className="events_list-item">{event.title}</li>
-                })}
-            </ul>
+            
+            { isLoading ? <p>Loading...</p>
+            :  <EventList events={events} />
+            }
 
         </React.Fragment>
     );
