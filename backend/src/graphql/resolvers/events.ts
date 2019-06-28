@@ -26,14 +26,14 @@ export const eventsResolver = {
             description: eventInput.description,
             price: eventInput.price,
             date: new Date(eventInput.date),
-            creator: '5cf4cf2afc7b8613903150d2'
+            creator: req.userId
         });
 
         let createdEvent: any;
         return event.save()
             .then((result: any) => {
                 createdEvent = transformEvent(result);
-                return UserModel.findById('5cf4cf2afc7b8613903150d2');
+                return UserModel.findById(req.userId);
             })
             .then((user: any) => {
                 if (!user) {

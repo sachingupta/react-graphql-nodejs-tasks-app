@@ -26,7 +26,7 @@ export const bookingResolver = {
         return EventModel.findOne({ _id: eventId })
             .then((event: any) => {
                 const booking = new BookingModel({
-                    user: '5cf4cf2afc7b8613903150d2',
+                    user: req.userId,
                     event: event
                 });
                 return booking.save()
