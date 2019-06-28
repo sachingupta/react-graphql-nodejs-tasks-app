@@ -45,6 +45,50 @@ export const EventsPage = (props: any) => {
         setSelectedEvent(null);
     }
 
+    const fetchEvents = () => {
+        setIsLoading(true);
+        let requestBody = {
+            query: `
+            query {
+                events {
+                    _id
+                    title
+                    price
+                    description
+                    date
+                    creator {
+                        _id
+                        email
+                    }
+                }
+            }
+            `
+        };
+
+        fetch(graphQLAPIUrl, {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Berear ' + authContext.token
+            }
+        })
+            .then((res) => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed');
+                }
+                return res.json();
+            })
+            .then(resData => {
+                setEvents(resData.data.events);
+                setIsLoading(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setIsLoading(false);
+            })
+    }
+
     const modalConfirmHandler = () => {
         if (title && description && date && price) {
             const event = { title, description, date, price };
@@ -93,27 +137,20 @@ export const EventsPage = (props: any) => {
     }
 
     const bookEventHandler = () => {
-        setSelectedEvent(null);
-    }
-
-    const fetchEvents = () => {
-        setIsLoading(true);
+        if(!authContext.token) {
+            setSelectedEvent(null);
+            return;
+        }
         let requestBody = {
             query: `
-            query {
-                events {
-                    _id
-                    title
-                    price
-                    description
-                    date
-                    creator {
-                        _id
-                        email
-                    }
-                }
+        mutation {
+            bookEvent(eventId: "${selectedEvent._id}") {
+                _id
+                createdAt
+                updatedAt
             }
-            `
+        }
+        `
         };
 
         fetch(graphQLAPIUrl, {
@@ -131,13 +168,12 @@ export const EventsPage = (props: any) => {
                 return res.json();
             })
             .then(resData => {
-                setEvents(resData.data.events);
-                setIsLoading(false);
+                console.log(resData);
             })
             .catch(err => {
                 console.log(err);
-                setIsLoading(false);
             })
+        setSelectedEvent(null);
     }
 
     useEffect(() => {
@@ -175,14 +211,14 @@ export const EventsPage = (props: any) => {
                 <button className="button" type="button" onClick={startCreateEventHandler}>Create Event</button>
             </div>}
 
-            {selectedEvent && (<Modal title={selectedEvent.title} confirmText="Book" canCancel canConfirm onCancel={modalCancelHandler} onConfirm={bookEventHandler}>
-               <h1>{selectedEvent.title}</h1>
-               <h2>{selectedEvent.price}</h2>
-               <p>{selectedEvent.description}</p>
+            {selectedEvent && (<Modal title={selectedEvent.title} confirmText={authContext.token ? "Book" : "Confirm"} canCancel canConfirm onCancel={modalCancelHandler} onConfirm={bookEventHandler}>
+                <h1>{selectedEvent.title}</h1>
+                <h2>{selectedEvent.price}</h2>
+                <p>{selectedEvent.description}</p>
             </Modal>)}
-            
-            { isLoading ? <p>Loading...</p>
-            :  <EventList events={events} onDetail={showDetailHandler} />
+
+            {isLoading ? <p>Loading...</p>
+                : <EventList events={events} onDetail={showDetailHandler} />
             }
 
         </React.Fragment>

@@ -4,9 +4,9 @@ import { EventModel } from "../../models/event";
 
 
 export const bookingResolver = {
-    bookings: function (req: any) {
+    bookings: function ({}, req: any) {
         if (!req.isAuth) {
-            throw new Error('Unauthenticated!');
+            throw new Error('Unauthenticated!' + JSON.stringify(req));
         }
         return BookingModel.find()
             .then((bookings: any) => {
@@ -20,6 +20,7 @@ export const bookingResolver = {
     },
 
     bookEvent: function ({ eventId }: any, req: any) {
+        console.log("bookEvent " + req.get('Authorization'));
         if (!req.isAuth) {
             throw new Error('Unauthenticated!');
         }

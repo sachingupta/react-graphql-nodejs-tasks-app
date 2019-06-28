@@ -7,7 +7,6 @@ export const eventsResolver = {
      events: function ({}, req: any) {
         return EventModel.find()
             .then((events: any) => {
-                console.log(events);
                 return events.map((event: any) => {
                     return transformEvent(event);
                 });
