@@ -18,7 +18,7 @@ export const getUser = (userId: any) => {
             return {
                 ...user._doc,
                 _id: user._doc._id.toString(),
-                createdEvents: eventLoader.load.bind(this, user._doc.createdEvents)
+                createdEvents: () => eventLoader.loadMany(user._doc.createdEvents)
             };
         })
         .catch((err: any) => {
