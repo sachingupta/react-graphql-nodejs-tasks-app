@@ -3,13 +3,16 @@ import '../App.css';
 import { graphQLAPIUrl } from '../constants';
 import { AuthContext } from '../context/auth-context';
 import { BookingList } from '../components/bookings/bookingList/BookingList';
+import { BookingsChart } from '../components/bookings/bookingChart/BookingsChart';
 
-export const BookingsPage  = (props: any) => {
+export const BookingsPage = (props: any) => {
     const authContext = useContext(AuthContext);
-    
+
     const [bookings, setBookings] = useState([] as any);
     const [isLoading, setIsLoading] = useState(false);
-    
+
+    const [outPutType, setOutPutType] = useState("List");
+
     const fetchBookings = () => {
         setIsLoading(true);
         let requestBody = {
@@ -21,6 +24,7 @@ export const BookingsPage  = (props: any) => {
                     updatedAt
                     event {
                         _id
+                        price
                         title
                         date
                     }
@@ -103,8 +107,25 @@ export const BookingsPage  = (props: any) => {
             })
     }
 
+    const showList = () => {
+        setOutPutType("List");
+    }
+
+    const showChart = () => {
+        setOutPutType("Chart");
+    }
+
 
     return (
-           <BookingList bookings={bookings} onCancel={onCancelBooking}/>
+        <React.Fragment>
+            <div>
+                <div className="bookingsControl">
+                <button onClick={showList}> List</button>
+                <button onClick={showChart}> Chart</button>
+                </div>
+             { outPutType === "List" && <BookingList bookings={bookings} onCancel={onCancelBooking} />}
+             { outPutType === "Chart" && <BookingsChart bookings={bookings} onCancel={onCancelBooking} />}
+            </div>
+        </React.Fragment>
     );
 }
